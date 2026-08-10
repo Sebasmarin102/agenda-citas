@@ -1,4 +1,5 @@
 import { createAppointment, getAppointmentsByDate, hasOverlappingAppointment } from "../models/appointmentModel.js";
+import { getAvailableSlots } from "../services/availabilityService.js";
 
 export const create = async (req, res) => {
     try {
@@ -24,5 +25,16 @@ export const listByDate = async (req, res) => {
         res.json(appointments)
     } catch (error) {        
         res.status(500).json({ error: 'Error fetching appointments' });
+    }
+}
+
+export const availableSlots = async (req, res) => {
+    try {
+        const { date, duration } = req.query;
+        const slots = await getAvailableSlots(date, Number(duration));
+        res.json(slots);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error fetching available slots' });
     }
 }
