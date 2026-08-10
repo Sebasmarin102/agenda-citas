@@ -16,3 +16,14 @@ export const getAppointmentsByDate = async (appointment_date) => {
     return rows
 }
 
+export const hasOverlappingAppointment = async ({ appointment_date, start_time, end_time }) => {
+    const [rows] = await pool.query(
+        `SELECT COUNT(*) AS count FROM appointments
+        WHERE appointment_date = ?
+        AND status = 'confirmed'
+        AND start_time < ?
+        AND end_time > ?`,
+        [appointment_date, end_time, start_time]
+    )
+    return rows[0].count > 0
+}
