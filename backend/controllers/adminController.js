@@ -25,6 +25,12 @@ export const cancelAppointmentHandler = async (req, res) => {
 
 export const blockSlot = async (req, res) => {
     try {
+        const parseResult = blockSlotSchema.safeParse(req.body);
+
+        if (!parseResult.success) {
+            return res.status(400).json({ error: parseResult.error.issues[0].message });
+        }
+        
         const { appointment_date, start_time, end_time } = req.body
 
         const overlaps = await hasOverlappingAppointment({ appointment_date, start_time, end_time })

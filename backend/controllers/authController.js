@@ -31,3 +31,10 @@ export const logout = (req, res) => {
     res.json({ message: 'Logged out' });
   });
 };
+
+export const me = (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+  res.json({ username: req.session.username });
+}

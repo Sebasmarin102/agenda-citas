@@ -1,10 +1,10 @@
 import { getAppointmentsByDate } from "../models/appointmentModel.js";
 
-const OPEN_TIME = '18:30:00'
-const CLOSE_TIME = '21:30:00'
+export const OPEN_TIME = '18:30:00'
+export const CLOSE_TIME = '21:30:00'
 const SLOT_STEP = 15
 
-const timeToMinutes = (time) => {
+export const timeToMinutes = (time) => {
     const [hours, minutes] = time.split(':').map(Number)
     return hours * 60 + minutes
 }
@@ -43,4 +43,20 @@ export const getAvailableSlots = async (date, durationMinutes) => {
     }
 
     return availableSlots;  
+}
+
+export const isWithinBusinessHours = (date, start_time, end_time) => {
+    const [year, month, day] = date.split('-').map(Number);
+    const dayOfWeek = new Date(year, month - 1, day).getDay();
+
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return false;
+    }
+
+    const start = timeToMinutes(start_time);
+    const end = timeToMinutes(end_time);
+    const open = timeToMinutes(OPEN_TIME);
+    const close = timeToMinutes(CLOSE_TIME);
+
+    return start >= open && end <= close;
 }
