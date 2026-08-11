@@ -110,7 +110,7 @@ function BookingForm({ onSuccess }) {
           <div className="field">
             <label>
               Celular:
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
+              <input type="tel" inputMode="numeric" maxLength={9} value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))} required />
             </label>
           </div>          
           <button type="submit">Confirmar cita</button>
