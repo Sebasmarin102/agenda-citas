@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getTodayDateString } from '../utils/date';
+import './Agenda.css'
 
-function Agenda() {
+function Agenda({ onLogout }) {
     const [date, setDate] = useState(getTodayDateString());
     const [appointments, setAppointments] = useState([]);
     const [blockStart, setBlockStart] = useState('');
@@ -55,17 +56,35 @@ function Agenda() {
         loadAppointments();
     }
 
-    return (
-        <div>
-            <label>
-                Fecha:
-                <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            </label>
+    const handleLogout = async () => {
+        await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+        onLogout();
+    };
 
-            <ul>
+    return (
+        <div className="agenda">
+            <div className="agenda-header">
+                <h2>Agenda del día</h2>
+                <button type="button" onClick={handleLogout}>Cerrar sesión</button>
+            </div>
+            
+
+            <div className="field">
+                <label>
+                    Fecha:
+                    <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                </label>
+            </div>
+
+            <ul className="appointment-list">
                 {appointments.map((appointment) => (
-                    <li key={appointment.id}>
-                        {appointment.start_time} - {appointment.end_time} | {appointment.client_name ?? 'Bloqueado'} | {appointment.status}
+                    <li key={appointment.id} className={`appointment-card status-${appointment.status}`}>
+                        <span className="time-range">{appointment.start_time} - {appointment.end_time}</span>
+                        <span className="client-name">{appointment.client_name ?? 'Bloqueado'}</span>
+                        <span className="status-badge">{appointment.status}</span>
                         {(appointment.status === 'confirmed' || appointment.status === 'blocked') && (
                             <button type="button" onClick={() => handleCancel(appointment.id)}>
                                 {appointment.status === 'blocked' ? 'Desbloquear' : 'Cancelar'}
@@ -75,18 +94,20 @@ function Agenda() {
                 ))}
             </ul>
 
-            <form onSubmit={handleBlock}>
+            <form onSubmit={handleBlock} className="block-form">
                 <h3>Bloquear horario</h3>
-                <label>
-                    Desde:
-                    <input type="time" value={blockStart} onChange={(e) => setBlockStart(e.target.value)} required />
-                </label>
-                <label>
-                    Hasta:
-                    <input type="time" value={blockEnd} onChange={(e) => setBlockEnd(e.target.value)} required />
-                </label>
+                <div className="time-fields">
+                    <label>
+                        Desde:
+                        <input type="time" value={blockStart} onChange={(e) => setBlockStart(e.target.value)} required />
+                    </label>
+                    <label>
+                        Hasta:
+                        <input type="time" value={blockEnd} onChange={(e) => setBlockEnd(e.target.value)} required />
+                    </label>
+                </div>
                 <button type="submit">Bloquear</button>
-                {error && <p>{error}</p>}
+                {error && <p className="error-message">{error}</p>}
             </form>
         </div>
     );

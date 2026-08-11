@@ -11,18 +11,20 @@ function AdminPage() {
             .then((res) => {
                 setIsAuthenticated(res.ok);
                 setCheckingAuth(false);
-            })
-    }, [])
-
-    if (checkingAuth) return <p>Cargando...</p>;
-
-    if (!isAuthenticated) {
-        return <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />;
-    }
+            });
+    }, []);
 
     return (
-        <Agenda />
-    )
+        <div className="page">
+            {checkingAuth ? (
+                <p>Cargando...</p>
+            ) : isAuthenticated ? (
+                <Agenda onLogout={() => setIsAuthenticated(false)} />
+            ) : (
+                <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />
+            )}
+        </div>
+    );
 }
 
 export default AdminPage;

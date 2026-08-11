@@ -1,0 +1,47 @@
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field input {
+  width: 100%;
+}
+
+.duration-options,
+.slot-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .slot-options {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.duration-options button.selected,
+.slot-options button.selected {
+  background-color: var(--color-selected);  
+  font-weight: 700;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--color-border);
+}
+
+.error-message {
+  color: var(--color-error);
+  font-weight: 600;
+}

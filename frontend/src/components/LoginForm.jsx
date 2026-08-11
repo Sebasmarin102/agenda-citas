@@ -1,4 +1,5 @@
 import { useState } from "react";
+import './LoginForm.css'
 
 function LoginForm({ onLoginSuccess }) {
     const [username, setUsername] = useState('')
@@ -26,17 +27,22 @@ function LoginForm({ onLoginSuccess }) {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Usuario:
-                <input value={username} onChange={(e) => setUsername(e.target.value)} required />
-            </label>
-            <label>
-                Contraseña:
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </label>
+        <form onSubmit={handleSubmit} className="login-form">
+            <h2>Panel de administración</h2>
+            <div className="field">
+                <label>
+                    Usuario:
+                    <input value={username} onChange={(e) => setUsername(e.target.value)} required />
+                </label>
+            </div>
+            <div className="field">
+                <label>
+                    Contraseña:
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </label>
+            </div>
             <button type="submit">Entrar</button>
-            {error && <p>{error}</p>}
+            {error && <p className="error-message">{error}</p>}
         </form>
     )
 }

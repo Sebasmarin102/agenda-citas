@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTodayDateString } from '../utils/date';
+import './BookingForm.css';
 
 const DURATIONS = [15, 30, 45, 60];
 
@@ -57,16 +58,21 @@ function BookingForm({ onSuccess }) {
   };
 
   return (
-    <div>
-      <label>
+    <div className="booking-form">
+      <label className="field">
         Fecha:
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        <input type="date" value={date} min={getTodayDateString()} onChange={(e) => setDate(e.target.value)} />
       </label>
 
-      <div>
+      <div className="duration-options">
         {DURATIONS.map((min) => (
-          <button key={min} type="button" onClick={() => setDuration(min)} disabled={duration === min}>
-            {min} min
+          <button
+            key={min}
+            type="button"
+            className={duration === min ? 'selected' : ''}
+            onClick={() => setDuration(min)}
+          >
+            {duration === min ? '✓ ' : ''}{min} min
           </button>
         ))}
       </div>
@@ -74,11 +80,19 @@ function BookingForm({ onSuccess }) {
       {date && duration && (
         availableSlots.length > 0 ? (
           <div>
-            {availableSlots.map((slot) => (
-              <button key={slot} type="button" onClick={() => setSelectedSlot(slot)} disabled={selectedSlot === slot}>
-                {slot}
-              </button>
-            ))}
+            <h3>Horarios disponibles</h3>
+            <div className="slot-options">
+              {availableSlots.map((slot) => (
+                <button
+                  key={slot}
+                  type="button"
+                  className={selectedSlot === slot ? 'selected' : ''}
+                  onClick={() => setSelectedSlot(slot)}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           <p>No hay horarios disponibles este día.</p>
@@ -86,15 +100,19 @@ function BookingForm({ onSuccess }) {
       )}
 
       {selectedSlot && (
-        <form onSubmit={handleSubmit}>
-          <label>
-            Nombre:
-            <input value={clientName} onChange={(e) => setClientName(e.target.value)} required />
-          </label>
-          <label>
-            Celular:
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
-          </label>
+        <form onSubmit={handleSubmit} className="contact-form">
+          <div className="field">
+            <label>
+              Nombre:
+              <input value={clientName} onChange={(e) => setClientName(e.target.value)} required />
+            </label>
+          </div>
+          <div className="field">
+            <label>
+              Celular:
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
+            </label>
+          </div>          
           <button type="submit">Confirmar cita</button>
           {error && <p>{error}</p>}
         </form>
