@@ -1,4 +1,5 @@
 import { getAppointmentsByDate } from "../models/appointmentModel.js";
+import { DateTime } from 'luxon';
 
 export const OPEN_TIME = '18:30:00'
 export const CLOSE_TIME = '21:30:00'
@@ -26,9 +27,14 @@ export const getAvailableSlots = async (date, durationMinutes) => {
     const bookedAppointments = await getAppointmentsByDate(date);
     const openMinutes = timeToMinutes(OPEN_TIME);
     const closeMinutes = timeToMinutes(CLOSE_TIME);
+    const now = DateTime.now().setZone('Europe/Madrid');
+    const isToday = date === now.toFormat('yyyy-MM-dd');
+    const currentMinutes = now.hour * 60 + now.minute;
     const availableSlots = [];    
 
     for (let start = openMinutes; start + durationMinutes <= closeMinutes; start += SLOT_STEP) {
+        if (isToday && start <= currentMinutes) continue;
+
         const end = start + durationMinutes;
 
         const overlaps = bookedAppointments.some((appointment) => {
@@ -60,3 +66,9 @@ export const isWithinBusinessHours = (date, start_time, end_time) => {
 
     return start >= open && end <= close;
 }
+
+export const isInThePast = (date, start_time) => {
+  const now = DateTime.now().setZone('Europe/Madrid');
+  const slotStart = DateTime.fromFormat(`${date} ${start_time}`, 'yyyy-MM-dd HH:mm:ss', { zone: 'Europe/Madrid' });
+  return slotStart <= now;
+};

@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { getTodayDateString } from "../utils/date.js";
-import { isWithinBusinessHours } from "../services/availabilityService.js";
+import { isWithinBusinessHours, isInThePast  } from "../services/availabilityService.js";
 
 const isNotPastDate = (date) => date >= getTodayDateString()
 
 export const createAppointmentSchema = z.object({
   client_name: z.string().trim().min(3, 'Name must be at least 3 characters'),
-  phone: z.string().regex(/^\d+$/, 'Phone must contain only digits'),
+  phone: z.string().regex(/^\d{9}$/, 'Phone must be exactly 9 digits'),
   appointment_date: z.string(),
   start_time: z.string(),
   end_time: z.string(),
@@ -21,6 +21,10 @@ export const createAppointmentSchema = z.object({
   })
   .refine((data) => isWithinBusinessHours(data.appointment_date, data.start_time, data.end_time), {
     message: 'Appointment must be within business hours (Mon-Fri, 6:30pm-9:30pm)',
+    path: ['start_time'],
+  })
+  .refine((data) => !isInThePast(data.appointment_date, data.start_time), {
+    message: 'Cannot book a time that has already passed',
     path: ['start_time'],
   });
 
@@ -39,6 +43,10 @@ export const blockSlotSchema = z.object({
   })
   .refine((data) => isWithinBusinessHours(data.appointment_date, data.start_time, data.end_time), {
     message: 'Blocked slot must be within business hours (Mon-Fri, 6:30pm-9:30pm)',
+    path: ['start_time'],
+  })
+  .refine((data) => !isInThePast(data.appointment_date, data.start_time), {
+    message: 'Cannot book a time that has already passed',
     path: ['start_time'],
   });
 
