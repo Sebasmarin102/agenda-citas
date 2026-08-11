@@ -1,12 +1,29 @@
 import express from 'express'
 import pool from './config/db.js'
 import appointmentRoutes from './routes/appointmentRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
+
+import session from 'express-session'
 import cors from 'cors'
 
 const app = express()
 app.use(express.json());
 app.use(cors());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 8 * 60 * 60 * 1000,
+  },
+}));
 
+app.use('/admin', adminRoutes);
+app.use('/auth', authRoutes);
 app.use('/appointments', appointmentRoutes)
 
 app.get('/', (req, res) => {
