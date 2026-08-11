@@ -1,8 +1,15 @@
 import { createAppointment, getAppointmentsByDate, hasOverlappingAppointment } from "../models/appointmentModel.js";
 import { getAvailableSlots } from "../services/availabilityService.js";
+import { createAppointmentSchema } from "../schemas/appointmentSchema.js";
 
 export const create = async (req, res) => {
     try {
+        const parseResult = createAppointmentSchema.safeParse(req.body);
+
+        if (!parseResult.success) {
+            return res.status(400).json({ error: parseResult.error.issues[0].message });
+        }
+        
         const { client_name, phone, appointment_date, start_time, end_time } = req.body
         const overlaps = await hasOverlappingAppointment({ appointment_date, start_time, end_time });
 

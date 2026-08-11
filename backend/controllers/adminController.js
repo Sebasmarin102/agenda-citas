@@ -1,4 +1,5 @@
 import { getAllAppointmentsByDate, cancelAppointment } from "../models/appointmentModel.js";
+import { createBlockedSlot, hasOverlappingAppointment } from "../models/appointmentModel.js";
 
 export const listAppointments = async (req, res) => {
   try {
@@ -21,3 +22,21 @@ export const cancelAppointmentHandler = async (req, res) => {
         res.status(500).json({ error: 'Error cancelling appointment' });
     }
 }
+
+export const blockSlot = async (req, res) => {
+    try {
+        const { appointment_date, start_time, end_time } = req.body
+
+        const overlaps = await hasOverlappingAppointment({ appointment_date, start_time, end_time })
+        if (overlaps) {
+            return res.status(409).json({ error: 'Time slot already booked or blocked' });
+        }
+
+        const id = await createBlockedSlot({ appointment_date, start_time, end_time });
+        res.status(201).json({ id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error blocking slot' });
+    }
+}
+
