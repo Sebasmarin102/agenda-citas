@@ -4,6 +4,7 @@ import appointmentRoutes from './routes/appointmentRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
 
+import { startCronJobs } from './cron.js';
 import session from 'express-session'
 import cors from 'cors'
 
@@ -37,6 +38,8 @@ app.get('/test-db', async (req, res) => {
     const [rows] = await pool.query('SELECT NOW() AS ahora')
     res.json(rows)
 })
+
+startCronJobs();
 
 const PORT = 3000
 app.listen(PORT, () => {

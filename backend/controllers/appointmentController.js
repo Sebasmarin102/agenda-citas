@@ -1,6 +1,7 @@
 import { createAppointment, getAppointmentsByDate, hasOverlappingAppointment } from "../models/appointmentModel.js";
 import { getAvailableSlots } from "../services/availabilityService.js";
 import { createAppointmentSchema } from "../schemas/appointmentSchema.js";
+import { sendNewBookingNotification } from '../services/reminderService.js'
 
 export const create = async (req, res) => {
     try {
@@ -18,6 +19,12 @@ export const create = async (req, res) => {
         }
 
         const id = await createAppointment({ client_name, phone, appointment_date, start_time, end_time });
+
+        try {
+            await sendNewBookingNotification({ client_name, phone, appointment_date, start_time, end_time });
+        } catch (emailError) {
+            console.error('Failed to send notification email:', emailError);
+        }
         res.status(201).json({ id });
     } catch (error) {
         console.error(error)

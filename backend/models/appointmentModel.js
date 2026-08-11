@@ -50,3 +50,23 @@ export const createBlockedSlot = async ({ appointment_date, start_time, end_time
     )
     return result.insertId;
 }
+
+export const getConfirmedAppointmentsByDate = async (appointment_date) => {
+  const [rows] = await pool.query(
+    'SELECT * FROM appointments WHERE appointment_date = ? AND status = ? ORDER BY start_time',
+    [appointment_date, 'confirmed']
+  );
+  return rows;
+};
+
+export const getPendingHourReminders = async (appointment_date) => {
+  const [rows] = await pool.query(
+    'SELECT * FROM appointments WHERE appointment_date = ? AND status = ? AND reminder_1h_sent = FALSE',
+    [appointment_date, 'confirmed']
+  );
+  return rows;
+};
+
+export const markHourReminderSent = async (id) => {
+  await pool.query('UPDATE appointments SET reminder_1h_sent = TRUE WHERE id = ?', [id]);
+};
