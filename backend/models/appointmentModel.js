@@ -70,3 +70,12 @@ export const getPendingHourReminders = async (appointment_date) => {
 export const markHourReminderSent = async (id) => {
   await pool.query('UPDATE appointments SET reminder_1h_sent = TRUE WHERE id = ?', [id]);
 };
+
+export const markNoShow = async (id) => {
+  await pool.query('UPDATE appointments SET status = ? WHERE id = ?', ['no_show', id]);
+};
+
+export const getAppointmentById = async (id) => {
+  const [rows] = await pool.query('SELECT * FROM appointments WHERE id = ?', [id]);
+  return rows[0];
+};

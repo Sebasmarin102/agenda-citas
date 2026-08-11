@@ -1,5 +1,12 @@
-import { getAllAppointmentsByDate, cancelAppointment } from "../models/appointmentModel.js";
-import { createBlockedSlot, hasOverlappingAppointment } from "../models/appointmentModel.js";
+import { 
+    getAllAppointmentsByDate, 
+    cancelAppointment, 
+    hasOverlappingAppointment, 
+    createBlockedSlot ,
+    markNoShow,
+    getAppointmentById
+} from "../models/appointmentModel.js";
+import { isInThePast } from '../services/availabilityService.js';
 
 export const listAppointments = async (req, res) => {
   try {
@@ -46,3 +53,23 @@ export const blockSlot = async (req, res) => {
     }
 }
 
+export const markNoShowHandler = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointment = await getAppointmentById(id);
+
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    if (!isInThePast(appointment.appointment_date, appointment.start_time)) {
+      return res.status(400).json({ error: 'Cannot mark a future appointment as no-show' });
+    }
+
+    await markNoShow(id);
+    res.json({ message: 'Marked as no-show' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error marking no-show' });
+  }
+};
