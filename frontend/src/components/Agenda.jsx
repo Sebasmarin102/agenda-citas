@@ -13,8 +13,8 @@ function Agenda() {
         fetch(`${import.meta.env.VITE_API_URL}/admin/appointments?date=${date}`, {
             credentials: 'include',
         })
-            .then((res) => res.json())
-            .then((data) => setAppointments(data));
+        .then((res) => res.ok ? res.json() : [])
+        .then((data) => setAppointments(data));
     };
 
     useEffect(() => {
