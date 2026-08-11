@@ -69,8 +69,7 @@ function Agenda({ onLogout }) {
             <div className="agenda-header">
                 <h2>Agenda del día</h2>
                 <button type="button" onClick={handleLogout}>Cerrar sesión</button>
-            </div>
-            
+            </div>            
 
             <div className="field">
                 <label>
