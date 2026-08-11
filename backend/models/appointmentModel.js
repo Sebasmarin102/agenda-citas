@@ -10,7 +10,7 @@ export const createAppointment = async ({ client_name, phone, appointment_date, 
 
 export const getAppointmentsByDate = async (appointment_date) => {
     const [rows] = await pool.query(
-        'SELECT * FROM appointments WHERE appointment_date = ? AND status IN ("confirmed", "blocked") ORDER BY start_time',
+        "SELECT * FROM appointments WHERE appointment_date = ? AND status IN ('confirmed', 'blocked') ORDER BY start_time",
         [appointment_date]
     );
     return rows
@@ -20,7 +20,7 @@ export const hasOverlappingAppointment = async ({ appointment_date, start_time, 
     const [rows] = await pool.query(
         `SELECT COUNT(*) AS count FROM appointments
         WHERE appointment_date = ?
-        AND status IN ("confirmed", "blocked")
+        AND status IN ('confirmed', 'blocked')
         AND start_time < ?
         AND end_time > ?`,
         [appointment_date, end_time, start_time]
