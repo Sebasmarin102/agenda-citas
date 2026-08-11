@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
+import { getTodayDateString } from '../utils/date';
 
 const DURATIONS = [15, 30, 45, 60];
-
-const getTodayDateString = () => {
-  return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Madrid' });
-};
 
 function BookingForm({ onSuccess }) {
   const [date, setDate] = useState(getTodayDateString());

@@ -1,20 +1,13 @@
-import { useState } from 'react'
-import BookingForm from './components/BookingForm'
-import ConfirmationMessage from './components/ConfirmationMessage'
-
+import { Routes, Route } from 'react-router-dom'
+import BookingPage from './pages/BookingPage'
+import AdminPage from './pages/AdminPage'
 
 function App() {
-  const [confirmedAppointment, setConfirmedAppointment] = useState(null);
-
   return (
-    <div>
-      <h1>Reserva tu cita</h1>
-      {confirmedAppointment ? (
-        <ConfirmationMessage appointment={confirmedAppointment} />
-      ) : (
-        <BookingForm onSuccess={setConfirmedAppointment}/>
-      )}      
-    </div>
+    <Routes>
+      <Route path="/" element={<BookingPage />}/>
+      <Route path="/admin" element={<AdminPage />}/>
+    </Routes>
   )
 }
 
