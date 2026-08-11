@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,7 +20,6 @@
     "express-session": "^1.19.0",
     "luxon": "^3.7.2",
     "mysql2": "^3.23.3",
-    "node-cron": "^4.6.0",
     "resend": "^6.19.0",
     "zod": "4.4.3"
   }

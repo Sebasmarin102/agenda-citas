@@ -4,16 +4,18 @@ import appointmentRoutes from './routes/appointmentRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
 
-import { startCronJobs } from './cron.js';
+import cronRoutes from './routes/cronRoutes.js';
 import session from 'express-session'
 import cors from 'cors'
 
 const app = express()
 app.use(express.json());
+
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true,
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
 }));
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -29,6 +31,7 @@ app.use(session({
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 app.use('/appointments', appointmentRoutes)
+app.use('/cron', cronRoutes);
 
 app.get('/', (req, res) => {
     res.send('Servidor funcionando')
@@ -39,9 +42,7 @@ app.get('/test-db', async (req, res) => {
     res.json(rows)
 })
 
-startCronJobs();
-
-const PORT = 3000
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)
 })
