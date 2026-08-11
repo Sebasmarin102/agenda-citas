@@ -1,23 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import BookingForm from './components/BookingForm'
+import ConfirmationMessage from './components/ConfirmationMessage'
 
 
 function App() {
-  const [slots, setSlots] = useState([])
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/appointments/available-slots?date=2026-08-14&duration=30`)
-      .then((res) => res.json())
-      .then((data) => setSlots(data))
-  }, [])
+  const [confirmedAppointment, setConfirmedAppointment] = useState(null);
 
   return (
     <div>
-      <h1>Horarios disponibles</h1>
-      <ul>
-        {slots.map((slot) => (
-          <li key={slot}>{slot}</li>
-        ))}
-      </ul>
+      <h1>Reserva tu cita</h1>
+      {confirmedAppointment ? (
+        <ConfirmationMessage appointment={confirmedAppointment} />
+      ) : (
+        <BookingForm onSuccess={setConfirmedAppointment}/>
+      )}      
     </div>
   )
 }
