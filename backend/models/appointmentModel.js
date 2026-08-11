@@ -35,3 +35,10 @@ export const getAllAppointmentsByDate = async (appointment_date) => {
   );
   return rows;
 };
+
+export const cancelAppointment = async (id) => {
+    await pool.query(
+        'UPDATE appointments SET status = ? WHERE id = ?',
+        ['cancelled', id]
+    )
+}
