@@ -16,9 +16,9 @@ Sistema de reservas de citas para un pequeño negocio de costura. Las clientas r
 
 **Para la administradora (panel protegido con login):**
 - Ver la agenda de cualquier día (incluye canceladas y horarios bloqueados).
-- Cancelar una cita, o marcarla como "no se presentó" (no-show) una vez que ya pasó su hora.
+- Cancelar una cita, o marcarla como "no se presentó" una vez que ya pasó su hora.
 - Bloquear un horario manualmente (por ejemplo, si no puede atender).
-- Dashboard con horarios más pedidos, días con más demanda, clientas frecuentes y tasa de no-shows.
+- Dashboard con horarios más pedidos, días con más demanda, clientas frecuentes y tasa de no presentados.
 - Recibe por correo: aviso instantáneo de cada cita nueva, resumen diario de las citas del día siguiente, y aviso cuando falta ~1 hora para una cita.
 
 ## Stack
@@ -31,15 +31,12 @@ Sistema de reservas de citas para un pequeño negocio de costura. Las clientas r
 - **Email:** Resend.
 - **Infraestructura:** Vercel (frontend), Render (backend), Aiven (MySQL), cron-job.org (tareas programadas externas).
 
-Documentación completa y detallada de cómo se construyó todo esto, decisión por decisión: carpeta [`documentación/`](./documentación).
-
 ## Estructura del repositorio
 
 ```
 Agenda-citas-costura/
 ├── backend/     → API REST (Express + MySQL)
 ├── frontend/    → Aplicación React (clienta + panel admin)
-└── documentación/ → Documentación técnica detallada
 ```
 
 ## Correr el proyecto en local
@@ -67,7 +64,7 @@ FRONTEND_URL=http://localhost:5173
 PORT=3000
 ```
 
-Crea la base de datos y las tablas (ver el esquema completo en [`documentación/02-base-de-datos.md`](./documentación/02-base-de-datos.md)), luego:
+Crea la base de datos y las tablas, luego:
 
 ```bash
 npm run dev
@@ -90,6 +87,4 @@ VITE_API_URL=http://localhost:3000
 npm run dev
 ```
 
-## Licencia
 
-Proyecto personal / de portafolio.
