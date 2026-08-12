@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
+import { getAuthHeaders } from '../utils/auth';
 import './Dashboard.css';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/admin/dashboard`, { credentials: 'include' })
+    fetch(`${import.meta.env.VITE_API_URL}/admin/dashboard`, {
+      headers: getAuthHeaders(),
+    })
       .then((res) => res.json())
       .then((data) => setStats(data));
   }, []);

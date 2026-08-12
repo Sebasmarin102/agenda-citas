@@ -1,5 +1,6 @@
-import bcrypt from 'bcryptjs'
-import { getUserByUsername } from "../models/userModel.js";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { getUserByUsername } from '../models/userModel.js';
 
 export const login = async (req, res) => {
   try {
@@ -16,25 +17,19 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    req.session.userId = user.id;
-    req.session.username = user.username;
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' }
+    );
 
-    res.json({ message: 'Login successful' });
+    res.json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error logging in' });
   }
 };
 
-export const logout = (req, res) => {
-  req.session.destroy(() => {
-    res.json({ message: 'Logged out' });
-  });
-};
-
 export const me = (req, res) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
-  res.json({ username: req.session.username });
-}
+  res.json({ username: req.user.username });
+};

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTodayDateString } from '../utils/date';
+import { getAuthHeaders } from '../utils/auth';
 import './Agenda.css';
 
 function Agenda() {
@@ -11,7 +12,7 @@ function Agenda() {
 
     const loadAppointments = () => {
         fetch(`${import.meta.env.VITE_API_URL}/admin/appointments?date=${date}`, {
-            credentials: 'include',
+            headers: getAuthHeaders(),
         })
         .then((res) => res.ok ? res.json() : [])
         .then((data) => setAppointments(data));
@@ -29,7 +30,7 @@ function Agenda() {
     const handleCancel = async (id) => {
         await fetch(`${import.meta.env.VITE_API_URL}/admin/appointments/${id}/cancel`, {
             method: 'PATCH',
-            credentials: 'include',
+            headers: getAuthHeaders(),
         });
         loadAppointments();
     };
@@ -37,7 +38,7 @@ function Agenda() {
     const handleNoShow = async (id) => {
         await fetch(`${import.meta.env.VITE_API_URL}/admin/appointments/${id}/no-show`, {
             method: 'PATCH',
-            credentials: 'include',
+            headers: getAuthHeaders(),
         });
         loadAppointments();
     };
@@ -48,8 +49,7 @@ function Agenda() {
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/appointments/block`, {
             method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
             body: JSON.stringify({
                 appointment_date: date,
                 start_time: `${blockStart}:00`,

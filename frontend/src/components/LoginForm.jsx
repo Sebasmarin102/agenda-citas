@@ -12,19 +12,20 @@ function LoginForm({ onLoginSuccess }) {
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
             method: 'POST',
-            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const data = await response.json();
             setError(data.error);
             return;
         }
 
+        localStorage.setItem('token', data.token);
         onLoginSuccess();
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit} className="login-form">

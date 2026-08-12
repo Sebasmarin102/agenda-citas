@@ -7,6 +7,7 @@ import {
     getAppointmentById
 } from "../models/appointmentModel.js";
 import { isInThePast } from '../services/availabilityService.js';
+import { blockSlotSchema } from '../schemas/appointmentSchema.js';
 
 export const listAppointments = async (req, res) => {
   try {

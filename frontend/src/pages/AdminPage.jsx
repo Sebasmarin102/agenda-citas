@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import LoginForm from '../components/LoginForm';
 import Agenda from '../components/Agenda';
 import Dashboard from '../components/Dashboard';
+import { getAuthHeaders } from '../utils/auth';
 
 function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -9,18 +10,23 @@ function AdminPage() {
   const [view, setView] = useState('agenda');
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, { credentials: 'include' })
-      .then((res) => {
-        setIsAuthenticated(res.ok);
-        setCheckingAuth(false);
-      });
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      setCheckingAuth(false);
+      return;
+    }
+
+    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+      headers: getAuthHeaders(),
+    }).then((res) => {
+      setIsAuthenticated(res.ok);
+      setCheckingAuth(false);
+    });
   }, []);
 
-  const handleLogout = async () => {
-    await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+  const handleLogout = () => {
+    localStorage.removeItem('token');
     setIsAuthenticated(false);
   };
 
